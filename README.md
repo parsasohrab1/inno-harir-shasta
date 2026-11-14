@@ -30,6 +30,13 @@
 
 این فایل‌های CSV فقط header/template هستند و حاوی داده واقعی کارخانه نیستند. اتصال OT، کالیبراسیون Twin و محاسبه plant-grade موازنه‌ها تا دریافت و تأیید ورودی‌های واقعی مسدود می‌مانند.
 
+## داده‌های عمومی و کاتالوگ مرجع
+- منابع عمومی صنعت خمیر و کاغذ و محدودیت کاربرد آن‌ها: [docs/DATA/PUBLIC-DATA-STRATEGY.md](docs/DATA/PUBLIC-DATA-STRATEGY.md)
+- رجیستری منابع و provenance: `data/public_sources.json`
+- دریافت فایل‌های عمومی EPA و JRC در مسیر `data/external/raw/`: `python scripts/download_public_data.py --all`
+- وضعیت منابع از API فقط‌خواندنی `GET /api/v1/reference-data` قابل مشاهده است.
+- فایل‌های باینری دانلودی عمداً در Git commit نمی‌شوند؛ اسکریپت و manifest محلی، دانلود تکرارپذیر و hash فایل‌ها را فراهم می‌کنند. منابع عمومی داده کارخانه یا حدود OEM نیستند.
+
 ## اجرای محلی
 1. Python 3.10 یا بالاتر نصب باشد.
 2. در ریشه مخزن:
