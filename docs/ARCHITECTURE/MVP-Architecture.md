@@ -39,7 +39,7 @@ Cross-cutting controls: RBAC, time synchronization, provenance, model/version re
 | Dashboard | Persian RTL single-page view | Role-based views, trends, historian queries and alarm lifecycle |
 | Audit | In-memory event list | Append-only durable store, user identity and retention controls |
 | Digital twin | Static what-if surrogate coefficients | Dynamic mass/energy balance, parameter estimation and validation |
-| RL | Not implemented in the MVP | Offline training/evaluation in simulator only; never online exploration on equipment |
+| RL | Dataset-only fitted-Q iteration scaffold in app/offline_rl.py; accepts simulator/offline_dataset records and rejects live sources | Validate dataset quality, add offline policy evaluation/uncertainty and safety review; never online exploration on equipment |
 
 ## 4. API contract
 
@@ -81,7 +81,7 @@ Fail closed for advisory generation: when critical data are stale, invalid, unav
 
 ## 8. Optimization and safety boundary
 
-The demonstrator scores a small set of synthetic press-load and dryer-temperature perturbations using a transparent objective combining an energy proxy and moisture deviation. It is an algorithm plumbing test, not a validated multi-objective process optimizer.
+The demonstrator scores a small set of synthetic press-load and dryer-temperature perturbations, returns a Pareto front for energy-proxy/moisture trade-offs, and selects one illustrative candidate using a transparent weighted score. It is an algorithm plumbing test, not a validated process optimizer.
 
 The demo delta bounds are software test bounds only. Real hard constraints must be obtained from machine OEM documentation and approved plant engineering documents, then versioned by grade, equipment state and operating mode. Safety constraints are hard filters and must never be represented only as reward penalties.
 
@@ -92,11 +92,11 @@ The demo delta bounds are software test bounds only. Real hard constraints must 
 3. Validate on held-out time periods and across grade/speed families.
 4. Add disturbance and sensor-fault scenarios.
 5. Benchmark constrained classical optimization against baseline.
-6. Only then consider offline RL training on a versioned simulator/dataset.
+6. The current fitted-Q scaffold consumes fixed offline transition rows only; extend it only after dataset quality, reward definition and simulator validity are approved.
 7. Evaluate policy robustness, uncertainty, OOD behavior and constraint satisfaction.
 8. Expose approved outputs in shadow/advisory mode only.
 
-No exploration, policy execution, or automatic setpoint changes on live equipment are permitted in this scope.
+The offline scaffold never steps an environment and returns abstract action labels only. No exploration, policy execution, or automatic setpoint changes on live equipment are permitted in this scope.
 
 ## 10. Run locally
 
