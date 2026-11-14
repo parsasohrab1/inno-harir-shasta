@@ -32,3 +32,38 @@ def test_optimizer_is_advisory_and_bounded():
     assert abs(result["recommended_delta"]["press_load_delta_pct"]) <= 2
     assert abs(result["recommended_delta"]["dryer_temp_delta_c"]) <= 1
     assert "no PLC/DCS" in result["execution"]
+
+
+def test_optimizer_exposes_pareto_front():
+    result = optimize_advisory(make_simulated_sample())
+    assert result["pareto_front"]
+    assert all(item["feasible_in_demo"] for item in result["pareto_front"])
+
+
+def test_offline_rl_accepts_fixed_simulator_dataset_only():
+    from app.offline_rl import fit_fitted_q_iteration
+    rows = [{
+        "state": [1.0, 2.0],
+        "action_id": "candidate_a",
+        "reward": 1.0,
+        "next_state": [1.5, 2.0],
+        "terminal": True,
+        "source": "simulator",
+    }]
+    result = fit_fitted_q_iteration(rows, ["candidate_a", "candidate_b"], iterations=2)
+    assert result["mode"] == "OFFLINE_DATASET_ONLY"
+    assert "environment" in result["execution"]
+
+
+def test_offline_rl_rejects_live_source():
+    import pytest
+    from app.offline_rl import fit_fitted_q_iteration
+    rows = [{
+        "state": [1.0],
+        "action_id": "candidate_a",
+        "reward": 1.0,
+        "next_state": [2.0],
+        "source": "live_plc",
+    }]
+    with pytest.raises(ValueError):
+        fit_fitted_q_iteration(rows, ["candidate_a"])
