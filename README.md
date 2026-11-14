@@ -8,6 +8,7 @@
 - [معماری اجرایی MVP و مرزهای ایمنی](docs/ARCHITECTURE/MVP-Architecture.md)
 - [معماری پیاده‌سازی نسخه 0.2 و مدل داده](docs/ARCHITECTURE/MVP-Implementation-v0.2.md)
 - [وضعیت پیاده‌سازی و محدودیت‌ها](docs/IMPLEMENTATION-STATUS.md)
+- [بسته آمادگی پایلوت صنعتی و درخواست داده](docs/PILOT/Pilot-Data-Readiness-Pack.md)
 
 ## وضعیت MVP نسخه 0.2
 - FastAPI backend با health، ingestion، history، dashboard، DVR، Digital Twin، optimizer چندهدفه، تصمیم اپراتور و audit.
@@ -18,6 +19,16 @@
 - جست‌وجوی سناریو و Pareto با سه هدف نمایشی: کمینه‌سازی بخار ویژه proxy، کمینه‌سازی خطای رطوبت و بیشینه‌سازی نرخ تولید proxy.
 - داشبورد فارسی RTL با روند داده، وضعیت DVR، خروجی Twin، پیشنهاد و رویدادهای ممیزی.
 - RL همچنان فقط scaffold آفلاین و مبتنی بر transitionهای از پیش ثبت‌شده است؛ هیچ online exploration یا تعامل تجهیز وجود ندارد.
+
+## مرحله بعد: آمادگی پایلوت صنعتی
+بسته `docs/PILOT/` برای دریافت و تأیید داده واقعی تهیه شده است:
+- `Pilot-Data-Readiness-Pack.md`: گردش کار، stage gateها، قرارداد داده، DVR، موازنه جرم/انرژی، کالیبراسیون و اعتبارسنجی مستقل Twin.
+- `templates/tag-register.csv`: ثبت Tag List، واحدها، timestamp، کیفیت، کالیبراسیون و تأیید مالک.
+- `templates/historian-sample.csv`: قالب فراداده و نمونه‌های Historian.
+- `templates/lab-results.csv`: نتایج آزمایشگاه با پیوند نمونه/رول/بچ.
+- `templates/oem-envelope.csv`: ثبت حدود OEM با مرجع سند و تأییدیه.
+
+این فایل‌های CSV فقط header/template هستند و حاوی داده واقعی کارخانه نیستند. اتصال OT، کالیبراسیون Twin و محاسبه plant-grade موازنه‌ها تا دریافت و تأیید ورودی‌های واقعی مسدود می‌مانند.
 
 ## اجرای محلی
 1. Python 3.10 یا بالاتر نصب باشد.
