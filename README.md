@@ -5,23 +5,38 @@
 ## مستندات
 - [BRS — نیازمندی‌های کسب‌وکار](docs/BRS/BRS-HarirSmart-AI.md)
 - [SRS — نیازمندی‌های نرم‌افزار](docs/SRS/SRS-HarirSmart-AI.md)
+- [معماری اجرایی MVP و مرزهای ایمنی](docs/ARCHITECTURE/MVP-Architecture.md)
 
-## رویکرد نسخه نخست
-نسخه اول read-only و Advisory است: داده‌های مجاز را دریافت می‌کند، کیفیت داده را می‌سنجد، رطوبت و انرژی را پیش‌بینی می‌کند، سناریوها را در دوقلوی دیجیتال ارزیابی می‌کند و پیشنهاد مقید به اپراتور می‌دهد. هیچ فرمانی به PLC/DCS ارسال نمی‌شود.
+## وضعیت MVP نسخه 0.1.0
+- FastAPI backend با APIهای health، sample ingestion، dashboard، optimization advisory و audit.
+- شبیه‌ساز داده مصنوعی برای تست محلی.
+- DVR اولیه: کنترل فیلدهای الزامی، نوع/محدوده عددی، تازگی timestamp و سازگاری رطوبت.
+- KPIهای نمایشی و یک بهینه‌ساز grid-search شفاف برای سناریوهای what-if.
+- داشبورد فارسی RTL.
+- تست‌های واحد برای کیفیت داده و منطق پیشنهاد.
 
-## دامنه اصلی
-- Dewatering optimization
-- Dryer/Yankee and steam optimization (subject to actual machine configuration)
-- Moisture and quality prediction
-- Digital twin and constrained multi-objective optimization
-- Offline RL training and policy evaluation
-- Data validation/reconciliation, KPI dashboards and audit trail
+## اجرای محلی
+~~~bash
+python -m venv .venv
+# Windows:
+.venv\Scripts\activate
+# Linux/macOS:
+source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+~~~
 
-## شروع پروژه
-قبل از طراحی تفصیلی باید tag list، نقشه فرایند، مشخصات ماشین، حدود مجاز سازنده، داده تاریخی، نتایج آزمایشگاه، کنتورهای بخار/انرژی و سیاست امنیت OT از کارفرما دریافت شوند.
+داشبورد: http://127.0.0.1:8000  
+مستند API: http://127.0.0.1:8000/docs
 
-## نکته مهم
-اهداف ۱۰–۲۰٪ کاهش انرژی، اهداف آزمایشی پایلوت هستند و تا زمان اندازه‌گیری baseline نرمال‌شده و آزمون کنترل‌شده، تضمین عملکرد محسوب نمی‌شوند. RL در محیط شبیه‌سازی آموزش داده می‌شود؛ exploration روی ماشین واقعی مجاز نیست.
+اجرای تست‌ها:
+~~~bash
+pytest -q
+~~~
 
-## وضعیت
-اسناد نسخه 1.0 برای کشف نیاز و تأیید ذی‌نفعان آماده شده‌اند. جزئیات سخت‌افزار، پروتکل و حدود فرایندی هنوز نیازمند تأیید کارخانه هستند.
+## مرز ایمنی و اعتبار داده
+نسخه نخست فقط **Read-only / Advisory** است و هیچ مسیر نوشتن یا ارسال فرمان به PLC/DCS ندارد. ثبت پذیرش/رد پیشنهاد صرفاً ثبت رویداد است و اجرای فرایندی ایجاد نمی‌کند. RL در این نسخه پیاده‌سازی نشده؛ هرگونه RL آتی فقط در شبیه‌ساز و به‌صورت آفلاین مجاز است و exploration روی ماشین واقعی ممنوع خواهد بود.
+
+تمام مقادیر، بازه‌های plausibility، ضرایب مدل و deltaهای بهینه‌ساز در این MVP مصنوعی و صرفاً برای آزمایش نرم‌افزار هستند؛ آن‌ها حدود مجاز واقعی ماشین یا setpoint تأییدشده نیستند. پیش از پایلوت باید tag list، پیکربندی ماشین، حدود OEM، کنتورهای کالیبره، داده کیفیت و الزامات IT/OT/HSE از کارخانه اخذ و تأیید شوند.
+
+هدف تحقیقاتی ۱۰–۲۰٪ کاهش انرژی ویژه خشک‌کن فقط فرضیه قابل ارزیابی در پایلوت با baseline نرمال‌شده است و تضمین عملکرد نیست.
