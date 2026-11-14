@@ -1,0 +1,9 @@
+[project]
+name = "harirsmart-ai"
+version = "0.1.0"
+description = "Read-only advisory MVP for tissue machine process monitoring"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
