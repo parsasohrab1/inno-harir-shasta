@@ -11,6 +11,7 @@
 
 ## وضعیت MVP نسخه 0.2
 - FastAPI backend با health، ingestion، history، dashboard، DVR، Digital Twin، optimizer چندهدفه، تصمیم اپراتور و audit.
+- قرارداد ReadOnlyTagAdapter و SimulatorAdapter برای جداکردن منبع داده از لایه ingestion؛ هیچ متد نوشتن در قرارداد آداپتور وجود ندارد.
 - SQLite برای نگهداری پایدار نمونه‌های خام، نتیجه کیفیت/DVR، پیشنهادها و رویدادهای ممیزی؛ مسیر فایل با HARIRSMART_DB_PATH قابل تنظیم است.
 - DVR تگ‌محور با کنترل واحد، محدوده نمایشی، timestamp، تازگی، duplicate/missing و source quality؛ مقدار خام حفظ می‌شود و اصلاح خودکار انجام نمی‌شود.
 - شبیه‌ساز داده مصنوعی و Digital Twin تجربی برای what-if؛ مدل صریحاً کالیبره‌نشده است.

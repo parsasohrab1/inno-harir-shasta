@@ -14,6 +14,7 @@ The repository already had FastAPI ingestion/dashboard endpoints, synthetic samp
 - app/dvr.py: tag registry, unit/range/time/duplicate/missing/source-quality checks, raw-value preservation, and explicit proxy-only reconciliation.
 - app/process_model.py: deterministic illustrative digital twin, bounded what-if scenarios, three-objective enumeration and non-dominated Pareto output.
 - app/main.py: history, DVR validation and twin simulation endpoints; durable sample/proposal/audit storage; optimizer quality gate.
+- app/adapters/: explicit read-only tag-source contract and simulator implementation; no write method is defined.
 - app/static/index.html: industrial RTL operator view for process KPIs, quality, history, Twin and Pareto recommendation.
 - Tests cover DVR, digital-twin bounds, Pareto outputs, SQLite restart persistence, API workflow, and read-only route surface.
 

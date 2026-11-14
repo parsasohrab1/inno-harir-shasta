@@ -9,7 +9,8 @@ from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from .core import audit_record, calculate_kpis, make_simulated_sample, validate_sample
+from .core import audit_record, calculate_kpis, validate_sample
+from .adapters.simulator import SimulatorAdapter
 from .dvr import build_tag_readings, reconcile_sample, validate_tag_readings
 from .process_model import optimize_multiobjective, simulate_tissue_process
 from .storage import SQLiteStore
@@ -21,6 +22,7 @@ app = FastAPI(
     description="Read-only tissue-line monitoring, digital-twin scenarios, and advisory MVP. No PLC/DCS command interface.",
 )
 STORE = SQLiteStore()
+SIMULATOR_ADAPTER = SimulatorAdapter()
 AUDIT: list[dict] = []
 LATEST_SAMPLE: dict | None = None
 LATEST_SAMPLE_ID: str | None = None
@@ -71,10 +73,10 @@ def _record_audit(action: str, actor: str, object_id: str, details: dict) -> dic
     return event
 
 
-def _save_sample(sample: dict, sample_id: str | None = None) -> dict:
+def _save_sample(sample: dict, sample_id: str | None = None, readings: list[dict] | None = None) -> dict:
     global LATEST_SAMPLE, LATEST_SAMPLE_ID
     quality = validate_sample(sample)
-    dvr = validate_tag_readings(build_tag_readings(sample))
+    dvr = validate_tag_readings(readings if readings is not None else build_tag_readings(sample))
     record = {
         "sample_id": sample_id or str(uuid4()),
         "sample": sample,
@@ -109,10 +111,9 @@ def health():
 
 @app.get("/api/v1/simulator/sample")
 def simulator_sample():
-    sample = make_simulated_sample()
-    sample["source"] = "simulator"
-    _save_sample(sample)
-    return sample
+    snapshot = SIMULATOR_ADAPTER.read_snapshot()
+    _save_sample(snapshot.sample, readings=snapshot.readings)
+    return snapshot.sample
 
 
 @app.post("/api/v1/samples")

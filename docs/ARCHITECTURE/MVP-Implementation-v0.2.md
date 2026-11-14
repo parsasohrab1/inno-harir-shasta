@@ -18,13 +18,15 @@ Synthetic simulator / read-only sample API
 → Advisory API
 → RTL operator dashboard + decision/audit
 
-Future OT source path (not enabled): PLC/DCS/SCADA/Historian → approved OT read-only gateway → tag adapter → ingestion. Any future adapter must expose read methods only, use network segmentation/DMZ and least privilege, and undergo OT cybersecurity review. Do not add a control topic or write method.
+Future OT source path (not enabled): PLC/DCS/SCADA/Historian → approved OT read-only gateway → implementation of ReadOnlyTagAdapter.read_snapshot() → ingestion. The contract deliberately exposes no write method. Any future adapter must use a separate read-only account, network segmentation/DMZ and least privilege, and undergo OT cybersecurity review. Do not add a control topic or write method.
 
 ## 3. Implemented modules
 
 | Module | Responsibility | Persistence / safety |
 |---|---|---|
 | app/main.py | FastAPI orchestration, request validation, quality gate, API | No write endpoint |
+| app/adapters/contracts.py | ReadOnlyTagAdapter protocol and TagSnapshot contract | read_snapshot only; no write method |
+| app/adapters/simulator.py | Synthetic source implementing the read-only contract | simulator only |
 | app/storage.py | Samples, proposals, audit events | SQLite WAL; per-operation connection |
 | app/dvr.py | Tag metadata, quality flags, reconciliation proxies | Raw values retained; no silent correction |
 | app/process_model.py | Digital Twin and scenario/Pareto evaluation | Synthetic coefficients only |
