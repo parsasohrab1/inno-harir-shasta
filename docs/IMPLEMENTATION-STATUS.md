@@ -1,39 +1,34 @@
 # HarirSmart AI — Implementation Status
 
-- Repository branch: `main`
-- Baseline: MVP 0.1.0
+- Branch: main
+- MVP increment: 0.2.0
 - Scope: local demonstrator; not approved for production or plant control.
 
-## Existing implementation verified in repository
+## Verified baseline reused
 
-The repository already contains a FastAPI service, synthetic sample generator, input validation/DVR checks, dashboard KPI calculations, an advisory grid-search optimizer with Pareto alternatives, operator decision/audit capture, Persian RTL dashboard, and a dataset-only fitted-Q iteration scaffold in `app/offline_rl.py`.
+The repository already had FastAPI ingestion/dashboard endpoints, synthetic sample generation, basic sample validation, KPI proxies, a grid-search advisory optimizer, operator decision logging, a Persian RTL dashboard, and a dataset-only fitted-Q scaffold. These were retained rather than recreated in a parallel application tree.
 
-The existing architecture document is authoritative for the current implementation. This status note supplements it and avoids duplicating the implementation in a second, conflicting application tree.
+## Increment 0.2 delivered
 
-## Additional API regression coverage
+- app/storage.py: SQLite persistence for raw samples, quality/DVR results, proposals and audit events; WAL mode and bounded read APIs.
+- app/dvr.py: tag registry, unit/range/time/duplicate/missing/source-quality checks, raw-value preservation, and explicit proxy-only reconciliation.
+- app/process_model.py: deterministic illustrative digital twin, bounded what-if scenarios, three-objective enumeration and non-dominated Pareto output.
+- app/main.py: history, DVR validation and twin simulation endpoints; durable sample/proposal/audit storage; optimizer quality gate.
+- app/static/index.html: industrial RTL operator view for process KPIs, quality, history, Twin and Pareto recommendation.
+- Tests cover DVR, digital-twin bounds, Pareto outputs, SQLite restart persistence, API workflow, and read-only route surface.
 
-`tests/test_api.py` covers:
-- explicit read-only health status and disabled PLC writes;
-- end-to-end simulator → dashboard → advisory proposal → operator decision flow;
-- absence of PLC, actuator, setpoint, or command routes in the generated OpenAPI schema.
+## Data and safety contract
 
-## Known limitations / next engineering increments
+1. Raw samples are persisted even when invalid; invalid/stale/uncertain critical data cannot become the current recommendation state.
+2. DVR does not silently impute or overwrite raw sensor values. It preserves values and emits quality flags/issues.
+3. Current production and steam-intensity values remain proxies because web width, dry mass flow, calibrated meters and product-good mass are not yet connected.
+4. Twin coefficients and guardrails are synthetic test envelopes, not OEM limits, approved setpoints or a validated physical model.
+5. Optimizer results are advisory records only. The API contains no PLC/DCS write, actuator, or command endpoint.
+6. RL remains dataset-only and offline. No online exploration, environment stepping or equipment interaction is introduced.
+7. 10–20% energy reduction remains a pilot hypothesis requiring normalized baseline, calibrated metering, and quality/production non-regression.
 
-1. The current service stores latest sample, proposal and audit events in process memory; introduce durable storage and restart-safe audit retention.
-2. The current KPI production rate is a proxy; replace it with validated good-product mass flow and calibrated steam/energy meters.
-3. Replace illustrative process coefficients and demo bounds only after obtaining OEM-approved envelopes and plant historian/lab data.
-4. Add read-only OT gateway and protocol adapters only after OT cybersecurity review; no write methods or control topics.
-5. Extend the Digital Twin with validated mass/energy balances, uncertainty estimates and held-out-period validation.
-6. Keep RL offline and dataset-only. Do not add online exploration or equipment actuation.
-7. Evaluate energy-saving hypotheses against a normalized baseline; do not present the 10–20% research target as a guaranteed result.
+## Run and verify
 
-## Verification
+From repository root: pip install -r requirements.txt, uvicorn app.main:app --reload, then pytest -q. The SQLite file defaults to data/harirsmart.db; override with HARIRSMART_DB_PATH.
 
-Run from repository root:
-
-```bash
-pip install -r requirements.txt
-pytest -q
-```
-
-The regression tests are committed for CI execution. Passing tests demonstrate software behavior only, not process-model validity or operational safety certification.
+Passing software tests do not validate the process model, machine safety envelope, cybersecurity, or production readiness. Before OT connection, complete tag mapping, time synchronization, historian validation, OEM envelope approval, OT security review, HAZOP/MOC as applicable, and FAT/SAT.

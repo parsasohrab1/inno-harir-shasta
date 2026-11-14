@@ -6,38 +6,53 @@
 - [BRS — نیازمندی‌های کسب‌وکار](docs/BRS/BRS-HarirSmart-AI.md)
 - [SRS — نیازمندی‌های نرم‌افزار](docs/SRS/SRS-HarirSmart-AI.md)
 - [معماری اجرایی MVP و مرزهای ایمنی](docs/ARCHITECTURE/MVP-Architecture.md)
+- [معماری پیاده‌سازی نسخه 0.2 و مدل داده](docs/ARCHITECTURE/MVP-Implementation-v0.2.md)
+- [وضعیت پیاده‌سازی و محدودیت‌ها](docs/IMPLEMENTATION-STATUS.md)
 
-## وضعیت MVP نسخه 0.1.0
-- FastAPI backend با APIهای health، sample ingestion، dashboard، optimization advisory و audit.
-- شبیه‌ساز داده مصنوعی برای تست محلی.
-- DVR اولیه: کنترل فیلدهای الزامی، نوع/محدوده عددی، تازگی timestamp و سازگاری رطوبت.
-- KPIهای نمایشی، جست‌وجوی چندهدفه نمایشی با خروجی Pareto و پیشنهاد what-if.
-- چارچوب بسیار اولیه Fitted-Q آفلاین مبتنی بر دیتاست ثابت؛ ورودی live را رد می‌کند و هیچ تعاملی با تجهیزات ندارد.
-- داشبورد فارسی RTL.
-- تست‌های واحد برای کیفیت داده و منطق پیشنهاد.
+## وضعیت MVP نسخه 0.2
+- FastAPI backend با health، ingestion، history، dashboard، DVR، Digital Twin، optimizer چندهدفه، تصمیم اپراتور و audit.
+- SQLite برای نگهداری پایدار نمونه‌های خام، نتیجه کیفیت/DVR، پیشنهادها و رویدادهای ممیزی؛ مسیر فایل با HARIRSMART_DB_PATH قابل تنظیم است.
+- DVR تگ‌محور با کنترل واحد، محدوده نمایشی، timestamp، تازگی، duplicate/missing و source quality؛ مقدار خام حفظ می‌شود و اصلاح خودکار انجام نمی‌شود.
+- شبیه‌ساز داده مصنوعی و Digital Twin تجربی برای what-if؛ مدل صریحاً کالیبره‌نشده است.
+- جست‌وجوی سناریو و Pareto با سه هدف نمایشی: کمینه‌سازی بخار ویژه proxy، کمینه‌سازی خطای رطوبت و بیشینه‌سازی نرخ تولید proxy.
+- داشبورد فارسی RTL با روند داده، وضعیت DVR، خروجی Twin، پیشنهاد و رویدادهای ممیزی.
+- RL همچنان فقط scaffold آفلاین و مبتنی بر transitionهای از پیش ثبت‌شده است؛ هیچ online exploration یا تعامل تجهیز وجود ندارد.
 
 ## اجرای محلی
-~~~bash
-python -m venv .venv
-# Windows:
-.venv\Scripts\activate
-# Linux/macOS:
-source .venv/bin/activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-~~~
+1. Python 3.10 یا بالاتر نصب باشد.
+2. در ریشه مخزن:
 
-داشبورد: http://127.0.0.1:8000  
-مستند API: http://127.0.0.1:8000/docs
+    python -m venv .venv
 
-اجرای تست‌ها:
-~~~bash
-pytest -q
-~~~
+    Windows: .venv\Scripts\activate
+
+    Linux/macOS: source .venv/bin/activate
+
+    pip install -r requirements.txt
+
+    uvicorn app.main:app --reload
+
+3. داشبورد: http://127.0.0.1:8000
+4. مستند API: http://127.0.0.1:8000/docs
+5. تست‌ها: pytest -q
+
+پایگاه داده به‌صورت پیش‌فرض در data/harirsmart.db ساخته می‌شود. برای تغییر مسیر، متغیر محیطی HARIRSMART_DB_PATH را تنظیم کنید.
+
+## APIهای اصلی
+- GET /api/v1/health
+- GET /api/v1/simulator/sample
+- POST /api/v1/samples
+- GET /api/v1/history
+- POST /api/v1/dvr/validate
+- GET /api/v1/dashboard
+- POST /api/v1/twin/simulate
+- POST /api/v1/optimize
+- POST /api/v1/proposals/{proposal_id}/decision
+- GET /api/v1/audit
 
 ## مرز ایمنی و اعتبار داده
-نسخه نخست فقط **Read-only / Advisory** است و هیچ مسیر نوشتن یا ارسال فرمان به PLC/DCS ندارد. ثبت پذیرش/رد پیشنهاد صرفاً ثبت رویداد است و اجرای فرایندی ایجاد نمی‌کند. چارچوب RL فقط به‌صورت scaffold آفلاین و مبتنی بر transitionهای از پیش ثبت‌شده است؛ هیچ تعامل با محیط زنده ندارد و منبع live را رد می‌کند. توسعه و ارزیابی بیشتر آن باید فقط روی داده/شبیه‌ساز آفلاین انجام شود؛ exploration روی ماشین واقعی ممنوع است.
+نسخه نخست فقط **Read-only / Advisory** است و هیچ مسیر نوشتن یا ارسال فرمان به PLC/DCS ندارد. ثبت پذیرش/رد پیشنهاد صرفاً ثبت رویداد است و اجرای فرایندی ایجاد نمی‌کند. چارچوب RL فقط به‌صورت scaffold آفلاین و مبتنی بر transitionهای از پیش ثبت‌شده است؛ هیچ تعامل با محیط زنده ندارد و منبع live را رد می‌کند. exploration روی ماشین واقعی ممنوع است.
 
-تمام مقادیر، بازه‌های plausibility، ضرایب مدل و deltaهای بهینه‌ساز در این MVP مصنوعی و صرفاً برای آزمایش نرم‌افزار هستند؛ آن‌ها حدود مجاز واقعی ماشین یا setpoint تأییدشده نیستند. پیش از پایلوت باید tag list، پیکربندی ماشین، حدود OEM، کنتورهای کالیبره، داده کیفیت و الزامات IT/OT/HSE از کارخانه اخذ و تأیید شوند.
+تمام مقادیر، بازه‌های plausibility، ضرایب Digital Twin و deltaهای بهینه‌ساز در این MVP مصنوعی و صرفاً برای آزمایش نرم‌افزار هستند؛ آن‌ها حدود مجاز واقعی ماشین یا setpoint تأییدشده نیستند. پیش از پایلوت باید tag list، پیکربندی ماشین، حدود OEM، کنتورهای کالیبره، داده کیفیت و الزامات IT/OT/HSE از کارخانه اخذ و تأیید شوند.
 
 هدف تحقیقاتی ۱۰–۲۰٪ کاهش انرژی ویژه خشک‌کن فقط فرضیه قابل ارزیابی در پایلوت با baseline نرمال‌شده است و تضمین عملکرد نیست.

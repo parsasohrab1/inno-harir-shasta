@@ -2,39 +2,112 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HarirSmart AI | داشبورد پایلوت</title>
+<title>HarirSmart AI | Industrial Advisory</title>
 <style>
-:root{font-family:Tahoma,Arial,sans-serif;color:#e8eef7;background:#0b1420}
-*{box-sizing:border-box}body{margin:0;padding:24px;background:linear-gradient(135deg,#0b1420,#13283a)}
+:root{color-scheme:dark;font-family:Tahoma,Arial,sans-serif;background:#08131f;color:#e8f0f7}
+*{box-sizing:border-box}body{margin:0;padding:24px;background:radial-gradient(circle at 85% 0,#18384b 0,transparent 35%),#08131f}
 header{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-h1{font-size:24px;margin:0}small,.muted{color:#9fb2c8}
-.pill{background:#183c36;color:#8ce0bf;border:1px solid #286b58;padding:8px 12px;border-radius:20px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin:22px 0}
-.card{background:#142437;border:1px solid #294158;border-radius:14px;padding:18px;min-height:110px}
-.metric{font-size:28px;font-weight:700;margin-top:12px}.label{color:#9fb2c8;font-size:13px}
-button{border:0;border-radius:9px;padding:12px 18px;background:#1e9b78;color:white;font-weight:700;cursor:pointer;margin:4px}
-button.secondary{background:#34516c}button:disabled{opacity:.5;cursor:not-allowed}
-pre{white-space:pre-wrap;direction:ltr;text-align:left;color:#b9d8ef;background:#0b1725;padding:14px;border-radius:10px;overflow:auto}
-.notice{border-right:4px solid #e2ae51;background:#30291c;padding:12px;border-radius:8px;color:#f3d99c}
-@media(max-width:600px){body{padding:14px}h1{font-size:19px}}
-</style></head>
+h1{font-size:24px;margin:0}h2{font-size:16px;margin:0 0 14px}.sub,.muted{color:#8fa8ba;font-size:12px}
+.badge{border:1px solid #2d8c73;color:#81e0bd;background:#102f2b;padding:8px 13px;border-radius:30px;font-size:12px}
+.notice{margin:18px 0;border:1px solid #765b2e;border-right:4px solid #d9a94f;background:#2b251a;color:#f1d99d;padding:13px;border-radius:10px;font-size:13px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+button{border:1px solid #2c806d;background:#176a5c;color:#effff9;border-radius:9px;padding:11px 16px;font-weight:bold;cursor:pointer}
+button.alt{background:#1b3347;border-color:#34536c}button:disabled{opacity:.45;cursor:wait}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}
+.card{background:linear-gradient(145deg,#142638,#102030);border:1px solid #263f52;border-radius:13px;padding:16px;min-width:0}
+.metric{font-size:27px;font-weight:700;margin:10px 0 4px;direction:ltr;text-align:right}.unit{color:#8fa8ba;font-size:11px}
+.columns{display:grid;grid-template-columns:1.1fr 1fr;gap:12px;margin:12px 0}
+.kpi-title{font-size:12px;color:#a7bac8}.status{font-size:13px;margin-top:8px}.good{color:#82dfb8}.warn{color:#f1ca79}.bad{color:#ff9292}
+pre{white-space:pre-wrap;overflow:auto;direction:ltr;text-align:left;background:#081521;border:1px solid #263d50;padding:12px;border-radius:9px;color:#bdd6e8;font-size:11px;max-height:260px}
+table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:9px;border-bottom:1px solid #294154;text-align:right}th{color:#8fa8ba;font-weight:normal}
+svg{width:100%;height:190px;display:block;background:#0a1926;border-radius:9px}
+.footer{color:#718b9d;font-size:11px;margin-top:18px}
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.columns{grid-template-columns:1fr}}
+@media(max-width:520px){body{padding:13px}h1{font-size:19px}.grid{gap:8px}.card{padding:12px}.metric{font-size:22px}}
+</style>
+</head>
 <body>
-<header><div><h1>HarirSmart AI</h1><small>پایش و پیشنهاد بهینه‌سازی خط تولید تیشو</small></div><span class="pill">READ-ONLY · ADVISORY</span></header>
-<p class="notice">نسخه نمایشی: داده‌ها و حدود عددی شبیه‌سازی‌شده‌اند. این سامانه هیچ فرمانی به PLC/DCS ارسال نمی‌کند.</p>
-<div><button onclick="loadDemo()">دریافت داده شبیه‌ساز</button><button class="secondary" onclick="recommend()">محاسبه پیشنهاد</button><button class="secondary" onclick="loadAudit()">رویدادهای ممیزی</button></div>
-<section class="grid" id="metrics">
-<div class="card"><div class="label">رطوبت خروجی (%)</div><div class="metric" id="moisture">—</div></div>
-<div class="card"><div class="label">فشار بارگذاری نمایشی (%)</div><div class="metric" id="press">—</div></div>
-<div class="card"><div class="label">دمای خشک‌کن نمایشی (°C)</div><div class="metric" id="temp">—</div></div>
-<div class="card"><div class="label">بخار ورودی نمایشی (t/h)</div><div class="metric" id="steam">—</div></div>
+<header><div><h1>HarirSmart AI</h1><div class="sub">پایش هوشمند آبگیری و خشک‌کن خط تولید تیشو · MVP 0.2</div></div><span class="badge">READ-ONLY · ADVISORY</span></header>
+<div class="notice">محیط نمایشی و داده مصنوعی است. Twin و حدود عددی کالیبره نشده‌اند؛ این سامانه هیچ فرمان یا setpoint به PLC/DCS ارسال نمی‌کند.</div>
+<div class="actions">
+<button id="refreshBtn" onclick="refreshAll()">دریافت نمونه شبیه‌ساز</button>
+<button class="alt" onclick="runTwin()">اجرای Digital Twin</button>
+<button class="alt" onclick="runOptimizer()">بهینه‌سازی چندهدفه</button>
+<button class="alt" onclick="loadAudit()">ممیزی رویدادها</button>
+</div>
+<section class="grid">
+<div class="card"><div class="kpi-title">رطوبت خروجی</div><div class="metric" id="moisture">—</div><div class="unit">درصد · sample</div></div>
+<div class="card"><div class="kpi-title">بارگذاری پرس</div><div class="metric" id="press">—</div><div class="unit">درصد · نمایشی</div></div>
+<div class="card"><div class="kpi-title">دمای خشک‌کن</div><div class="metric" id="temp">—</div><div class="unit">°C · نمایشی</div></div>
+<div class="card"><div class="kpi-title">دبی بخار</div><div class="metric" id="steam">—</div><div class="unit">t/h · نمایشی</div></div>
 </section>
-<div class="card"><h3>کیفیت داده</h3><div id="quality" class="muted">برای شروع، داده شبیه‌ساز را دریافت کنید.</div></div>
-<div class="card" style="margin-top:14px"><h3>پیشنهاد بهینه‌ساز (What-if)</h3><div id="proposal" class="muted">هنوز پیشنهادی محاسبه نشده است.</div></div>
-<div class="card" style="margin-top:14px"><h3>گزارش ممیزی</h3><pre id="audit">—</pre></div>
+<div class="columns">
+<div class="card"><h2>سلامت داده و DVR</h2><div id="quality" class="status muted">در انتظار دریافت داده</div><pre id="dvr">—</pre></div>
+<div class="card"><h2>شاخص‌های فرایندی</h2><div id="kpis" class="status muted">در انتظار نمونه معتبر</div><p class="muted">نرخ تولید و بخار ویژه در این نسخه proxy هستند، نه KPI تأییدشده کارخانه.</p></div>
+</div>
+<div class="columns">
+<div class="card"><h2>روند نمونه‌های اخیر</h2><svg id="trend" viewBox="0 0 600 190" role="img" aria-label="روند رطوبت خروجی"></svg><div class="muted">رطوبت خروجی (%) از نمونه‌های ذخیره‌شده</div></div>
+<div class="card"><h2>Digital Twin · What-if</h2><pre id="twin">برای اجرای سناریوی نمایشی، دکمه Digital Twin را بزنید.</pre></div>
+</div>
+<div class="columns">
+<div class="card"><h2>بهینه‌ساز و جبهه Pareto</h2><pre id="proposal">هنوز پیشنهادی محاسبه نشده است.</pre><svg id="pareto" viewBox="0 0 600 190" role="img" aria-label="نمودار Pareto"></svg><div class="muted">محور افقی: بخار ویژه proxy · محور عمودی: خطای رطوبت</div></div>
+<div class="card"><h2>تاریخچه نمونه‌ها</h2><div style="overflow:auto"><table><thead><tr><th>زمان دریافت</th><th>رطوبت خروجی</th><th>کیفیت</th></tr></thead><tbody id="history"><tr><td colspan="3">—</td></tr></tbody></table></div></div>
+</div>
+<div class="card"><h2>Audit Trail</h2><pre id="audit">—</pre></div>
+<div class="footer">HarirSmart AI · Advisory only · مقادیر و مدل‌های این نسخه برای آزمون نرم‌افزار هستند، نه بهره‌برداری صنعتی.</div>
 <script>
-async function api(path,opts={}){const r=await fetch(path,{headers:{"Content-Type":"application/json"},...opts});const j=await r.json();if(!r.ok)throw new Error(JSON.stringify(j.detail||j));return j}
-async function loadDemo(){try{const s=await api("/api/v1/simulator/sample");const d=await api("/api/v1/dashboard");document.getElementById("moisture").textContent=s.moisture_out_pct;document.getElementById("press").textContent=s.press_load_pct;document.getElementById("temp").textContent=s.dryer_temp_c;document.getElementById("steam").textContent=s.steam_flow_tph;document.getElementById("quality").textContent=d.quality.quality_flag+" — "+(d.quality.issues.join(", ")||"تمام کنترل‌های اولیه");}catch(e){alert(e.message)}}
-async function recommend(){try{const p=await api("/api/v1/optimize",{method:"POST"});document.getElementById("proposal").innerHTML="<b>پیشنهاد صرفاً شبیه‌سازی:</b><pre>"+JSON.stringify(p.recommended_delta,null,2)+"</pre><p>رطوبت پیش‌بینی‌شده: "+p.predicted_outcomes.predicted_moisture_out_pct+"% | امتیاز تابع هدف نمایشی: "+p.predicted_outcomes.objective_score+"</p><small>"+p.execution+"</small>";}catch(e){alert(e.message)}}
-async function loadAudit(){try{const a=await api("/api/v1/audit");document.getElementById("audit").textContent=JSON.stringify(a.items,null,2)}catch(e){alert(e.message)}}
-loadDemo();
-</script></body></html>
+async function api(path,options={}){const response=await fetch(path,{headers:{"Content-Type":"application/json"},...options});const body=await response.json();if(!response.ok)throw new Error(typeof body.detail==="string"?body.detail:JSON.stringify(body.detail||body));return body}
+function num(value,digits=2){return Number.isFinite(Number(value))?Number(value).toFixed(digits):"—"}
+function showError(error){alert(error.message||String(error))}
+function setText(id,value){document.getElementById(id).textContent=value}
+async function refreshAll(){
+ const button=document.getElementById("refreshBtn");button.disabled=true;
+ try{
+  await api("/api/v1/simulator/sample");
+  const [dashboard,history]=await Promise.all([api("/api/v1/dashboard"),api("/api/v1/history?limit=24")]);
+  const s=dashboard.sample,k=dashboard.kpis;
+  setText("moisture",num(s.moisture_out_pct));setText("press",num(s.press_load_pct));setText("temp",num(s.dryer_temp_c));setText("steam",num(s.steam_flow_tph));
+  const q=dashboard.dvr.quality_flag;setText("quality",q+" · "+(dashboard.dvr.issues.join("، ")||"تمام کنترل‌های اولیه"));
+  document.getElementById("quality").className="status "+(q==="GOOD"?"good":q==="SUSPECT"?"warn":"bad");
+  setText("dvr",JSON.stringify({quality:dashboard.dvr.quality_flag,issues:dashboard.dvr.issues,reconciliation:dashboard.reconciliation},null,2));
+  setText("kpis","رطوبت حذف‌شده: "+num(k.moisture_delta_pct_point)+" واحد درصد\nنرخ تولید proxy: "+num(k.production_proxy_tph,4)+" t/h\nبخار به تولید proxy: "+num(k.steam_to_production_proxy,3));
+  renderHistory(history.items);renderTrend(history.items);await loadAudit();
+ }catch(e){showError(e)}finally{button.disabled=false}
+}
+function renderHistory(items){
+ const rows=items.slice(0,10).map(item=>"<tr><td>"+new Date(item.received_at).toLocaleTimeString("fa-IR")+"</td><td>"+num(item.sample.moisture_out_pct)+"%</td><td>"+item.quality.quality_flag+"</td></tr>").join("");
+ document.getElementById("history").innerHTML=rows||"<tr><td colspan='3'>بدون داده</td></tr>";
+}
+function renderTrend(items){
+ const values=items.slice().reverse().map(x=>Number(x.sample.moisture_out_pct)).filter(Number.isFinite);
+ const svg=document.getElementById("trend");if(!values.length){svg.innerHTML="";return}
+ const min=Math.min(...values)-0.3,max=Math.max(...values)+0.3,span=Math.max(0.1,max-min);
+ const points=values.map((v,i)=>(30+i*540/Math.max(1,values.length-1))+","+(160-(v-min)*130/span)).join(" ");
+ svg.innerHTML="<polyline points='"+points+"' fill='none' stroke='#55d6b0' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/><text x='30' y='18' fill='#91aabc' font-size='11'>"+num(max)+"%</text><text x='30' y='181' fill='#91aabc' font-size='11'>"+num(min)+"%</text>";
+}
+async function runTwin(){
+ try{
+  const twin=await api("/api/v1/twin/simulate",{method:"POST",body:JSON.stringify({press_load_delta_pct:1,dryer_temp_delta_c:-0.5})});
+  setText("twin",JSON.stringify({model:twin.model_id,validity:twin.model_validity,scenario:twin.scenario,predicted:twin.predicted,constraints:twin.constraints},null,2));
+ }catch(e){showError(e)}
+}
+async function runOptimizer(){
+ try{
+  const p=await api("/api/v1/optimize",{method:"POST"});
+  setText("proposal","پیشنهاد صرفاً نمایشی: تغییر بار پرس "+num(p.recommended_delta.press_load_delta_pct)+" واحد درصد، تغییر دمای خشک‌کن "+num(p.recommended_delta.dryer_temp_delta_c)+"°C\nبخار ویژه proxy: "+num(p.predicted_outcomes.steam_per_production_proxy,4)+"\nخطای رطوبت: "+num(p.predicted_outcomes.moisture_error_pct_points)+"\nگزینه‌های Pareto: "+p.pareto_front.length+"\nاعتبار مدل: "+p.model_validity+"\nشناسه پیشنهاد: "+p.proposal_id);
+  renderPareto(p.pareto_front);
+ }catch(e){showError(e)}
+}
+function renderPareto(items){
+ const svg=document.getElementById("pareto");if(!items.length){svg.innerHTML="";return}
+ const xs=items.map(x=>Number(x.steam_per_production_proxy)),ys=items.map(x=>Number(x.moisture_error_pct_points));
+ const xmin=Math.min(...xs),xmax=Math.max(...xs),ymin=Math.min(...ys),ymax=Math.max(...ys);
+ const xspan=Math.max(0.0001,xmax-xmin),yspan=Math.max(0.0001,ymax-ymin);
+ const circles=items.map(x=>{const px=35+(x.steam_per_production_proxy-xmin)*520/xspan,py=160-(x.moisture_error_pct_points-ymin)*130/yspan;return "<circle cx='"+px+"' cy='"+py+"' r='6' fill='#e4b45f' stroke='#fff' stroke-width='1'/>"}).join("");
+ svg.innerHTML="<line x1='30' y1='160' x2='570' y2='160' stroke='#526c80'/><line x1='30' y1='20' x2='30' y2='160' stroke='#526c80'/>"+circles;
+}
+async function loadAudit(){try{const result=await api("/api/v1/audit?limit=30");setText("audit",JSON.stringify(result.items,null,2))}catch(e){setText("audit",e.message)}}
+refreshAll();
+</script>
+</body>
+</html>
