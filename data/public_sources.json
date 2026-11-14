@@ -1,0 +1,82 @@
+{
+  "version": "1.0",
+  "generated_at": "2026-11-14",
+  "policy": "Public-sector and research references only. External data are contextual/benchmarking inputs, never plant tags or OEM operating limits.",
+  "sources": [
+    {
+      "id": "epa_uisis_pnp_dataset",
+      "title": "US EPA UISIS-PNP Model Dataset",
+      "publisher": "US EPA Office of Research and Development",
+      "type": "xlsx",
+      "url": "https://pasteur.epa.gov/uploads/10.23719/1390779/UISIS-PNP%20Model%20Dataset.xlsx",
+      "landing_page": "https://catalog.data.gov/dataset/production-emissions-and-economic-as-well-as-historical-marketing-data-for-the-pulp-and-pa",
+      "published_or_updated": "2014-05-22",
+      "coverage": "US pulp and paper facilities; includes tissue as a product category; facility production/capacity/cost/fuel/emissions/energy-efficiency inputs, vintage data largely based on 2011 RISI inputs",
+      "license_note": "Public catalog entry; review EPA ScienceHub license linked in metadata before redistribution.",
+      "use": [
+        "sector context",
+        "facility/product-level economic and energy scenario context"
+      ],
+      "limitations": [
+        "Not high-frequency process historian data",
+        "Not tissue-machine-specific time series",
+        "Historical data; not a current operating benchmark"
+      ]
+    },
+    {
+      "id": "epa_uisis_pnp_outputs",
+      "title": "US EPA UISIS-PNP Model Outputs Example",
+      "publisher": "US EPA Office of Research and Development",
+      "type": "xlsx",
+      "url": "https://pasteur.epa.gov/uploads/10.23719/1390779/UISIS-PNP%20Model%20Outputs%20Example.xlsx",
+      "landing_page": "https://catalog.data.gov/dataset/production-emissions-and-economic-as-well-as-historical-marketing-data-for-the-pulp-and-pa",
+      "published_or_updated": "2014-05-22",
+      "coverage": "Illustrative model output workbooks for pulp and paper mitigation/economic analysis",
+      "license_note": "Public catalog entry; review EPA ScienceHub license before redistribution.",
+      "use": [
+        "scenario-analysis reference",
+        "economic model structure"
+      ],
+      "limitations": [
+        "Illustrative model outputs, not live plant measurements"
+      ]
+    },
+    {
+      "id": "jrc_pp_bref_2015",
+      "title": "Best Available Techniques Reference Document for Production of Pulp, Paper and Board",
+      "publisher": "European Commission Joint Research Centre / EIPPCB",
+      "type": "pdf",
+      "url": "https://bureau-industrial-transformation.jrc.ec.europa.eu/sites/default/files/2019-11/PP_revised_BREF_2015.pdf",
+      "landing_page": "https://bureau-industrial-transformation.jrc.ec.europa.eu/",
+      "published_or_updated": "2015",
+      "coverage": "Process descriptions, environmental performance and indicative energy/water reference information across pulp, paper and board processes",
+      "license_note": "Use according to the document/site terms; retain citation and page references.",
+      "use": [
+        "process taxonomy",
+        "benchmark interpretation",
+        "engineering review"
+      ],
+      "limitations": [
+        "Reference values depend on process boundaries, grade, furnish and mill configuration; not OEM limits"
+      ]
+    },
+    {
+      "id": "sfi_global_mill_database",
+      "title": "SFI Global Pulp and Paper Mill Database",
+      "publisher": "Spatial Finance Initiative / University of Oxford",
+      "type": "external_registration",
+      "url": "https://cgfi.ac.uk/spatial-finance-initiative/geoasset-project/pulp-and-paper-database/",
+      "landing_page": "https://cgfi.ac.uk/spatial-finance-initiative/geoasset-project/pulp-and-paper-database/",
+      "published_or_updated": "2025-07",
+      "coverage": "3,403 global pulp and paper facilities; location, operating status, plant/product type, capacity, fuel, certification and ownership where available",
+      "license_note": "CC BY 4.0; download is provided through a request form, so it is not fetched automatically.",
+      "use": [
+        "facility context",
+        "peer-group discovery"
+      ],
+      "limitations": [
+        "Not process telemetry; may not expose every field for every mill"
+      ]
+    }
+  ]
+}
