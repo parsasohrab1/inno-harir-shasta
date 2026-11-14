@@ -7,3 +7,8 @@ __pycache__/
 data/*.db
 data/*.db-shm
 data/*.db-wal
+
+# Downloaded third-party reference binaries are reproducible via scripts/download_public_data.py
+data/external/raw/*
+!data/external/raw/.gitkeep
+data/external/manifest.json
