@@ -102,7 +102,21 @@ def optimize_advisory(sample: dict[str, Any]) -> dict[str, Any]:
                 "objective_score": round(objective, 4),
                 "feasible_in_demo": feasible,
             })
-    best = min((c for c in candidates if c["feasible_in_demo"]), key=lambda c: c["objective_score"])
+    feasible = [c for c in candidates if c["feasible_in_demo"]]
+    pareto = [
+        c for c in feasible
+        if not any(
+            other is not c
+            and other["energy_proxy"] <= c["energy_proxy"]
+            and abs(other["predicted_moisture_out_pct"] - 5.0) <= abs(c["predicted_moisture_out_pct"] - 5.0)
+            and (
+                other["energy_proxy"] < c["energy_proxy"]
+                or abs(other["predicted_moisture_out_pct"] - 5.0) < abs(c["predicted_moisture_out_pct"] - 5.0)
+            )
+            for other in feasible
+        )
+    ]
+    best = min(feasible, key=lambda c: c["objective_score"])
     return {
         "mode": "ADVISORY_SIMULATION_ONLY",
         "status": "PROPOSAL",
@@ -114,6 +128,7 @@ def optimize_advisory(sample: dict[str, Any]) -> dict[str, Any]:
         },
         "predicted_outcomes": best,
         "alternatives": candidates,
+        "pareto_front": pareto,
         "constraints_note": "Demo perturbation bounds only; not approved machine limits.",
         "execution": "NONE — no PLC/DCS write path exists in this MVP.",
     }
