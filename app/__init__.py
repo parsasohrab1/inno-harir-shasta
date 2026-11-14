@@ -1,0 +1,1 @@
+"""HarirSmart AI MVP package."""
