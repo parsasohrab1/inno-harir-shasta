@@ -14,6 +14,7 @@ from .adapters.simulator import SimulatorAdapter
 from .dvr import build_tag_readings, reconcile_sample, validate_tag_readings
 from .process_model import optimize_multiobjective, simulate_tissue_process
 from .storage import SQLiteStore
+from .reference_data import get_reference_data_catalog
 
 
 app = FastAPI(
@@ -95,6 +96,12 @@ def _save_sample(sample: dict, sample_id: str | None = None, readings: list[dict
         LATEST_SAMPLE = sample
         LATEST_SAMPLE_ID = record["sample_id"]
     return record
+
+
+@app.get("/api/v1/reference-data")
+def reference_data_catalog():
+    """List public reference datasets and local download status; never returns plant telemetry."""
+    return get_reference_data_catalog()
 
 
 @app.get("/api/v1/health")
