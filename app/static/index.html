@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HarirSmart AI | داشبورد پایلوت</title>
+<style>
+:root{font-family:Tahoma,Arial,sans-serif;color:#e8eef7;background:#0b1420}
+*{box-sizing:border-box}body{margin:0;padding:24px;background:linear-gradient(135deg,#0b1420,#13283a)}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+h1{font-size:24px;margin:0}small,.muted{color:#9fb2c8}
+.pill{background:#183c36;color:#8ce0bf;border:1px solid #286b58;padding:8px 12px;border-radius:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin:22px 0}
+.card{background:#142437;border:1px solid #294158;border-radius:14px;padding:18px;min-height:110px}
+.metric{font-size:28px;font-weight:700;margin-top:12px}.label{color:#9fb2c8;font-size:13px}
+button{border:0;border-radius:9px;padding:12px 18px;background:#1e9b78;color:white;font-weight:700;cursor:pointer;margin:4px}
+button.secondary{background:#34516c}button:disabled{opacity:.5;cursor:not-allowed}
+pre{white-space:pre-wrap;direction:ltr;text-align:left;color:#b9d8ef;background:#0b1725;padding:14px;border-radius:10px;overflow:auto}
+.notice{border-right:4px solid #e2ae51;background:#30291c;padding:12px;border-radius:8px;color:#f3d99c}
+@media(max-width:600px){body{padding:14px}h1{font-size:19px}}
+</style></head>
+<body>
+<header><div><h1>HarirSmart AI</h1><small>پایش و پیشنهاد بهینه‌سازی خط تولید تیشو</small></div><span class="pill">READ-ONLY · ADVISORY</span></header>
+<p class="notice">نسخه نمایشی: داده‌ها و حدود عددی شبیه‌سازی‌شده‌اند. این سامانه هیچ فرمانی به PLC/DCS ارسال نمی‌کند.</p>
+<div><button onclick="loadDemo()">دریافت داده شبیه‌ساز</button><button class="secondary" onclick="recommend()">محاسبه پیشنهاد</button><button class="secondary" onclick="loadAudit()">رویدادهای ممیزی</button></div>
+<section class="grid" id="metrics">
+<div class="card"><div class="label">رطوبت خروجی (%)</div><div class="metric" id="moisture">—</div></div>
+<div class="card"><div class="label">فشار بارگذاری نمایشی (%)</div><div class="metric" id="press">—</div></div>
+<div class="card"><div class="label">دمای خشک‌کن نمایشی (°C)</div><div class="metric" id="temp">—</div></div>
+<div class="card"><div class="label">بخار ورودی نمایشی (t/h)</div><div class="metric" id="steam">—</div></div>
+</section>
+<div class="card"><h3>کیفیت داده</h3><div id="quality" class="muted">برای شروع، داده شبیه‌ساز را دریافت کنید.</div></div>
+<div class="card" style="margin-top:14px"><h3>پیشنهاد بهینه‌ساز (What-if)</h3><div id="proposal" class="muted">هنوز پیشنهادی محاسبه نشده است.</div></div>
+<div class="card" style="margin-top:14px"><h3>گزارش ممیزی</h3><pre id="audit">—</pre></div>
+<script>
+async function api(path,opts={}){const r=await fetch(path,{headers:{"Content-Type":"application/json"},...opts});const j=await r.json();if(!r.ok)throw new Error(JSON.stringify(j.detail||j));return j}
+async function loadDemo(){try{const s=await api("/api/v1/simulator/sample");const d=await api("/api/v1/dashboard");document.getElementById("moisture").textContent=s.moisture_out_pct;document.getElementById("press").textContent=s.press_load_pct;document.getElementById("temp").textContent=s.dryer_temp_c;document.getElementById("steam").textContent=s.steam_flow_tph;document.getElementById("quality").textContent=d.quality.quality_flag+" — "+(d.quality.issues.join(", ")||"تمام کنترل‌های اولیه");}catch(e){alert(e.message)}}
+async function recommend(){try{const p=await api("/api/v1/optimize",{method:"POST"});document.getElementById("proposal").innerHTML="<b>پیشنهاد صرفاً شبیه‌سازی:</b><pre>"+JSON.stringify(p.recommended_delta,null,2)+"</pre><p>رطوبت پیش‌بینی‌شده: "+p.predicted_outcomes.predicted_moisture_out_pct+"% | امتیاز تابع هدف نمایشی: "+p.predicted_outcomes.objective_score+"</p><small>"+p.execution+"</small>";}catch(e){alert(e.message)}}
+async function loadAudit(){try{const a=await api("/api/v1/audit");document.getElementById("audit").textContent=JSON.stringify(a.items,null,2)}catch(e){alert(e.message)}}
+loadDemo();
+</script></body></html>
